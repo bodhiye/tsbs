@@ -7,12 +7,12 @@ import (
 	"io"
 	"log"
 
+	"github.com/bodhiye/tsbs/load"
+	"github.com/bodhiye/tsbs/pkg/data"
+	"github.com/bodhiye/tsbs/pkg/data/usecases/common"
+	"github.com/bodhiye/tsbs/pkg/targets"
+	"github.com/bodhiye/tsbs/pkg/targets/mongo"
 	flatbuffers "github.com/google/flatbuffers/go"
-	"github.com/timescale/tsbs/load"
-	"github.com/timescale/tsbs/pkg/data"
-	"github.com/timescale/tsbs/pkg/data/usecases/common"
-	"github.com/timescale/tsbs/pkg/targets"
-	"github.com/timescale/tsbs/pkg/targets/mongo"
 )
 
 type fileDataSource struct {

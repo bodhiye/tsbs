@@ -2,21 +2,22 @@ package initializers
 
 import (
 	"fmt"
-	"github.com/timescale/tsbs/pkg/targets"
-	"github.com/timescale/tsbs/pkg/targets/akumuli"
-	"github.com/timescale/tsbs/pkg/targets/cassandra"
-	"github.com/timescale/tsbs/pkg/targets/clickhouse"
-	"github.com/timescale/tsbs/pkg/targets/constants"
-	"github.com/timescale/tsbs/pkg/targets/crate"
-	"github.com/timescale/tsbs/pkg/targets/influx"
-	"github.com/timescale/tsbs/pkg/targets/mongo"
-	"github.com/timescale/tsbs/pkg/targets/prometheus"
-	"github.com/timescale/tsbs/pkg/targets/questdb"
-	"github.com/timescale/tsbs/pkg/targets/siridb"
-	"github.com/timescale/tsbs/pkg/targets/timescaledb"
-	"github.com/timescale/tsbs/pkg/targets/timestream"
-	"github.com/timescale/tsbs/pkg/targets/victoriametrics"
 	"strings"
+
+	"github.com/bodhiye/tsbs/pkg/targets"
+	"github.com/bodhiye/tsbs/pkg/targets/akumuli"
+	"github.com/bodhiye/tsbs/pkg/targets/cassandra"
+	"github.com/bodhiye/tsbs/pkg/targets/clickhouse"
+	"github.com/bodhiye/tsbs/pkg/targets/constants"
+	"github.com/bodhiye/tsbs/pkg/targets/crate"
+	"github.com/bodhiye/tsbs/pkg/targets/influx"
+	"github.com/bodhiye/tsbs/pkg/targets/mongo"
+	"github.com/bodhiye/tsbs/pkg/targets/prometheus"
+	"github.com/bodhiye/tsbs/pkg/targets/questdb"
+	"github.com/bodhiye/tsbs/pkg/targets/siridb"
+	"github.com/bodhiye/tsbs/pkg/targets/timescaledb"
+	"github.com/bodhiye/tsbs/pkg/targets/timestream"
+	"github.com/bodhiye/tsbs/pkg/targets/victoriametrics"
 )
 
 func GetTarget(format string) targets.ImplementedTarget {

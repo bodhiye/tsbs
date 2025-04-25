@@ -3,12 +3,13 @@ package cassandra
 import (
 	"bufio"
 	"fmt"
-	"github.com/timescale/tsbs/pkg/data"
-	"github.com/timescale/tsbs/pkg/data/usecases/common"
-	"github.com/timescale/tsbs/pkg/targets"
 	"log"
 	"strings"
 	"sync"
+
+	"github.com/bodhiye/tsbs/pkg/data"
+	"github.com/bodhiye/tsbs/pkg/data/usecases/common"
+	"github.com/bodhiye/tsbs/pkg/targets"
 )
 
 type fileDataSource struct {

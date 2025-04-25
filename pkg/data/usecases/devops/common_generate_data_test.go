@@ -2,10 +2,11 @@ package devops
 
 import (
 	"fmt"
-	"github.com/timescale/tsbs/pkg/data"
-	"github.com/timescale/tsbs/pkg/data/usecases/common"
 	"testing"
 	"time"
+
+	"github.com/bodhiye/tsbs/pkg/data"
+	"github.com/bodhiye/tsbs/pkg/data/usecases/common"
 )
 
 const testLayout = "2006-01-02"

@@ -10,14 +10,14 @@ import (
 	"log"
 	"sync"
 
-	"github.com/blagojts/viper"
+	"github.com/spf13/viper"
 	"github.com/spf13/pflag"
-	"github.com/timescale/tsbs/internal/utils"
-	"github.com/timescale/tsbs/load"
-	"github.com/timescale/tsbs/pkg/targets"
-	"github.com/timescale/tsbs/pkg/targets/akumuli"
-	"github.com/timescale/tsbs/pkg/targets/constants"
-	"github.com/timescale/tsbs/pkg/targets/initializers"
+	"github.com/bodhiye/tsbs/load"
+	"github.com/bodhiye/tsbs/pkg/targets"
+	"github.com/bodhiye/tsbs/pkg/targets/akumuli"
+	"github.com/bodhiye/tsbs/pkg/targets/constants"
+	"github.com/bodhiye/tsbs/pkg/targets/initializers"
+	"github.com/bodhiye/tsbs/tools/utils"
 )
 
 // Program option vars:

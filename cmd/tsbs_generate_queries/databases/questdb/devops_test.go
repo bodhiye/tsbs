@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/timescale/tsbs/cmd/tsbs_generate_queries/uses/devops"
-	"github.com/timescale/tsbs/pkg/query"
+	"github.com/bodhiye/tsbs/cmd/tsbs_generate_queries/uses/devops"
+	"github.com/bodhiye/tsbs/pkg/query"
 )
 
 func TestDevopsGroupByTime(t *testing.T) {

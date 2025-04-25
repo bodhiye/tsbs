@@ -4,8 +4,8 @@ import (
 	"bufio"
 	"strings"
 
-	"github.com/timescale/tsbs/pkg/data"
-	"github.com/timescale/tsbs/pkg/data/usecases/common"
+	"github.com/bodhiye/tsbs/pkg/data"
+	"github.com/bodhiye/tsbs/pkg/data/usecases/common"
 )
 
 // scan.PointDecoder interface implementation

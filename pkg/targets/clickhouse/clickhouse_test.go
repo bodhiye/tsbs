@@ -7,7 +7,7 @@ import (
 	"log"
 	"testing"
 
-	"github.com/timescale/tsbs/pkg/data"
+	"github.com/bodhiye/tsbs/pkg/data"
 )
 
 func TestGetConnectString(t *testing.T) {

@@ -2,11 +2,12 @@ package devops
 
 import (
 	"fmt"
-	"github.com/timescale/tsbs/pkg/data"
-	"github.com/timescale/tsbs/pkg/data/usecases/common"
 	"strconv"
 	"testing"
 	"time"
+
+	"github.com/bodhiye/tsbs/pkg/data"
+	"github.com/bodhiye/tsbs/pkg/data/usecases/common"
 )
 
 func TestNewHostMeasurements(t *testing.T) {

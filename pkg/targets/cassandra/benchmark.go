@@ -4,11 +4,12 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"github.com/gocql/gocql"
-	"github.com/timescale/tsbs/load"
-	"github.com/timescale/tsbs/pkg/data/source"
-	"github.com/timescale/tsbs/pkg/targets"
 	"log"
+
+	"github.com/bodhiye/tsbs/load"
+	"github.com/bodhiye/tsbs/pkg/data/source"
+	"github.com/bodhiye/tsbs/pkg/targets"
+	"github.com/gocql/gocql"
 )
 
 type benchmark struct {

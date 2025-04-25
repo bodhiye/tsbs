@@ -1,6 +1,6 @@
 package prometheus
 
-import "github.com/blagojts/viper"
+import "github.com/spf13/viper"
 
 type SpecificConfig struct {
 	AdapterWriteURL string `yaml:"adapter-write-url" mapstructure:"adapter-write-url"`

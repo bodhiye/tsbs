@@ -9,15 +9,15 @@ import (
 	"testing"
 	"time"
 
-	"github.com/blagojts/viper"
+	"github.com/spf13/viper"
 	"github.com/spf13/pflag"
-	"github.com/timescale/tsbs/pkg/data"
-	"github.com/timescale/tsbs/pkg/data/serialize"
-	"github.com/timescale/tsbs/pkg/data/source"
-	"github.com/timescale/tsbs/pkg/data/usecases"
-	"github.com/timescale/tsbs/pkg/data/usecases/common"
-	"github.com/timescale/tsbs/pkg/targets"
-	"github.com/timescale/tsbs/pkg/targets/constants"
+	"github.com/bodhiye/tsbs/pkg/data"
+	"github.com/bodhiye/tsbs/pkg/data/serialize"
+	"github.com/bodhiye/tsbs/pkg/data/source"
+	"github.com/bodhiye/tsbs/pkg/data/usecases"
+	"github.com/bodhiye/tsbs/pkg/data/usecases/common"
+	"github.com/bodhiye/tsbs/pkg/targets"
+	"github.com/bodhiye/tsbs/pkg/targets/constants"
 )
 
 const (

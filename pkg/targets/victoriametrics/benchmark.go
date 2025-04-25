@@ -4,11 +4,12 @@ import (
 	"bufio"
 	"bytes"
 	"errors"
-	"github.com/blagojts/viper"
-	"github.com/timescale/tsbs/load"
-	"github.com/timescale/tsbs/pkg/data/source"
-	"github.com/timescale/tsbs/pkg/targets"
 	"sync"
+
+	"github.com/spf13/viper"
+	"github.com/bodhiye/tsbs/load"
+	"github.com/bodhiye/tsbs/pkg/data/source"
+	"github.com/bodhiye/tsbs/pkg/targets"
 )
 
 type SpecificConfig struct {

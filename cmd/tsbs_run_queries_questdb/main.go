@@ -15,10 +15,10 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/blagojts/viper"
+	"github.com/spf13/viper"
+	"github.com/bodhiye/tsbs/pkg/query"
+	"github.com/bodhiye/tsbs/tools/utils"
 	"github.com/spf13/pflag"
-	"github.com/timescale/tsbs/internal/utils"
-	"github.com/timescale/tsbs/pkg/query"
 )
 
 // Program option vars:

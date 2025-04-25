@@ -3,7 +3,7 @@ package main
 import (
 	"testing"
 
-	"github.com/timescale/tsbs/pkg/data"
+	"github.com/bodhiye/tsbs/pkg/data"
 )
 
 func TestBatch(t *testing.T) {

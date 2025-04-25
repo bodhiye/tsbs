@@ -3,11 +3,11 @@ package noop
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/snappy"
-	"github.com/prometheus/common/log"
 	"github.com/timescale/promscale/pkg/prompb"
 )
 
@@ -24,7 +24,7 @@ func NewAdapter(port int) *Adapter {
 // Start starts no-op Prometheus adapter. This call will block go-routine
 func (adapter *Adapter) Start() error {
 	http.HandleFunc("/", adapter.Handler)
-	log.Info("msg", fmt.Sprintf("Starting noop adapter listening on: %d\n", adapter.port))
+	log.Print("msg", fmt.Sprintf("Starting noop adapter listening on: %d\n", adapter.port))
 	return http.ListenAndServe(fmt.Sprintf(":%d", adapter.port), nil)
 }
 
@@ -32,19 +32,19 @@ func (adapter *Adapter) Start() error {
 func (adapter *Adapter) Handler(rw http.ResponseWriter, req *http.Request) {
 	compressed, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.Error("msg", "error while reading request", "error", err)
+		log.Fatal("msg", "error while reading request", "error", err)
 		http.Error(rw, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	decompressed, err := snappy.Decode(nil, compressed)
 	if err != nil {
-		log.Error("msg", "error while decompressing request", "error", err)
+		log.Fatal("msg", "error while decompressing request", "error", err)
 		http.Error(rw, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	var protoReq prompb.WriteRequest
 	if err := proto.Unmarshal(decompressed, &protoReq); err != nil {
-		log.Error("msg", "error while unmarshalling protobuf request", "error", err)
+		log.Fatal("msg", "error while unmarshalling protobuf request", "error", err)
 		http.Error(rw, err.Error(), http.StatusBadRequest)
 		return
 	}

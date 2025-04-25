@@ -1,9 +1,10 @@
 package inputs
 
 import (
-	"github.com/timescale/tsbs/internal/utils"
 	"testing"
 	"time"
+
+	"github.com/bodhiye/tsbs/tools/utils"
 )
 
 func TestIsIn(t *testing.T) {

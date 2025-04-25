@@ -3,7 +3,6 @@ package load
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/timescale/tsbs/pkg/targets"
 	"io/ioutil"
 	"log"
 	"math/rand"
@@ -11,8 +10,10 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/bodhiye/tsbs/pkg/targets"
+
+	"github.com/bodhiye/tsbs/load/insertstrategy"
 	"github.com/spf13/pflag"
-	"github.com/timescale/tsbs/load/insertstrategy"
 )
 
 const (

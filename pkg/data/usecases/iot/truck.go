@@ -2,7 +2,7 @@ package iot
 
 import (
 	"fmt"
-	"github.com/timescale/tsbs/pkg/data/usecases/common"
+	"github.com/bodhiye/tsbs/pkg/data/usecases/common"
 	"math/rand"
 	"time"
 )

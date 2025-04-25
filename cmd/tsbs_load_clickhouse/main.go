@@ -5,12 +5,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/blagojts/viper"
+
+	"github.com/spf13/viper"
+	"github.com/bodhiye/tsbs/load"
+	"github.com/bodhiye/tsbs/pkg/targets"
+	"github.com/bodhiye/tsbs/pkg/targets/clickhouse"
+	"github.com/bodhiye/tsbs/tools/utils"
 	"github.com/spf13/pflag"
-	"github.com/timescale/tsbs/internal/utils"
-	"github.com/timescale/tsbs/load"
-	"github.com/timescale/tsbs/pkg/targets"
-	"github.com/timescale/tsbs/pkg/targets/clickhouse"
 )
 
 // Global vars

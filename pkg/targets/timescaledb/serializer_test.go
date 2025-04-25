@@ -1,7 +1,7 @@
 package timescaledb
 
 import (
-	"github.com/timescale/tsbs/pkg/data/serialize"
+	"github.com/bodhiye/tsbs/pkg/data/serialize"
 	"testing"
 )
 

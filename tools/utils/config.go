@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"github.com/blagojts/viper"
+	"github.com/spf13/viper"
 	"github.com/spf13/pflag"
 )
 

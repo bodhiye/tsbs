@@ -12,12 +12,12 @@ import (
 	"time"
 
 	siridb "github.com/SiriDB/go-siridb-connector"
-	"github.com/blagojts/viper"
+	"github.com/spf13/viper"
+	"github.com/bodhiye/tsbs/cmd/tsbs_generate_queries/uses/devops"
+	"github.com/bodhiye/tsbs/pkg/query"
+	"github.com/bodhiye/tsbs/tools/utils"
 	_ "github.com/lib/pq"
 	"github.com/spf13/pflag"
-	"github.com/timescale/tsbs/cmd/tsbs_generate_queries/uses/devops"
-	"github.com/timescale/tsbs/internal/utils"
-	"github.com/timescale/tsbs/pkg/query"
 )
 
 // Program option vars:

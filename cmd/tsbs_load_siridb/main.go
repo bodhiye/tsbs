@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/blagojts/viper"
+	"github.com/spf13/viper"
+	"github.com/bodhiye/tsbs/load"
+	"github.com/bodhiye/tsbs/pkg/targets"
+	"github.com/bodhiye/tsbs/pkg/targets/constants"
+	"github.com/bodhiye/tsbs/pkg/targets/initializers"
+	"github.com/bodhiye/tsbs/tools/utils"
 	"github.com/spf13/pflag"
-	"github.com/timescale/tsbs/internal/utils"
-	"github.com/timescale/tsbs/load"
-	"github.com/timescale/tsbs/pkg/targets"
-	"github.com/timescale/tsbs/pkg/targets/constants"
-	"github.com/timescale/tsbs/pkg/targets/initializers"
 )
 
 // Program option vars:

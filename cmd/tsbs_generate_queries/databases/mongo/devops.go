@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/bodhiye/tsbs/cmd/tsbs_generate_queries/uses/devops"
+	"github.com/bodhiye/tsbs/pkg/query"
+	"github.com/bodhiye/tsbs/tools/utils"
 	"github.com/globalsign/mgo/bson"
-	"github.com/timescale/tsbs/cmd/tsbs_generate_queries/uses/devops"
-	"github.com/timescale/tsbs/internal/utils"
-	"github.com/timescale/tsbs/pkg/query"
 )
 
 // TODO: Remove the need for this by continuing to bubble up errors

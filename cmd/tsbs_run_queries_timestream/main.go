@@ -9,16 +9,17 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/aws/aws-sdk-go/service/timestreamquery"
-	"github.com/timescale/tsbs/pkg/targets/timestream"
 	"time"
 
-	"github.com/blagojts/viper"
+	"github.com/aws/aws-sdk-go/service/timestreamquery"
+	"github.com/bodhiye/tsbs/pkg/targets/timestream"
+
+	"github.com/spf13/viper"
+	"github.com/bodhiye/tsbs/pkg/query"
+	"github.com/bodhiye/tsbs/tools/utils"
 	_ "github.com/jackc/pgx/v4/stdlib"
 	_ "github.com/lib/pq"
 	"github.com/spf13/pflag"
-	"github.com/timescale/tsbs/internal/utils"
-	"github.com/timescale/tsbs/pkg/query"
 )
 
 // Program option vars:

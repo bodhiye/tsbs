@@ -1,12 +1,13 @@
 package timestream
 
 import (
-	"github.com/timescale/tsbs/pkg/data"
-	"github.com/timescale/tsbs/pkg/data/serialize"
-	"github.com/timescale/tsbs/pkg/data/usecases/common"
 	"log"
 	"strconv"
 	"time"
+
+	"github.com/bodhiye/tsbs/pkg/data"
+	"github.com/bodhiye/tsbs/pkg/data/serialize"
+	"github.com/bodhiye/tsbs/pkg/data/usecases/common"
 )
 
 type simulatorDataSource struct {

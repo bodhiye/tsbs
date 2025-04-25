@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/bodhiye/tsbs/pkg/data/usecases/common"
+	"github.com/bodhiye/tsbs/pkg/targets"
 	"github.com/jmoiron/sqlx"
-	_ "github.com/kshvakov/clickhouse"
-	"github.com/timescale/tsbs/pkg/data/usecases/common"
-	"github.com/timescale/tsbs/pkg/targets"
+	_ "github.com/ClickHouse/clickhouse-go"
 )
 
 // loader.DBCreator interface implementation
