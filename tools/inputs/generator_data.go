@@ -65,7 +65,7 @@ func (g *DataGenerator) init(config common.GeneratorConfig) error {
 	return nil
 }
 
-func (g *DataGenerator) Generate(config common.GeneratorConfig, target targets.ImplementedTarget) ([]data.Point, error) {
+func (g *DataGenerator) Generate(config common.GeneratorConfig, target targets.ImplementedTarget) ([]*data.Point, error) {
 	err := g.init(config)
 	if err != nil {
 		return nil, err
@@ -101,19 +101,18 @@ func (g *DataGenerator) CreateSimulator(config *common.DataGeneratorConfig) (com
 	return scfg.NewSimulator(g.config.LogInterval, g.config.Limit), nil
 }
 
-func (g *DataGenerator) runSimulator(sim common.Simulator, serializer serialize.PointSerializer, dgc *common.DataGeneratorConfig) ([]data.Point, error) {
+func (g *DataGenerator) runSimulator(sim common.Simulator, serializer serialize.PointSerializer, dgc *common.DataGeneratorConfig) ([]*data.Point, error) {
 	defer g.bufOut.Flush()
 
 	currGroupID := uint(0)
-	point := data.NewPoint()
-	var points = make([]data.Point, 0)
+	var points = make([]*data.Point, 0)
 	for !sim.Finished() {
+		point := data.NewPoint()
 		write := sim.Next(point)
 		if !write {
-			point.Reset()
 			continue
 		}
-		points = append(points, *point)
+		points = append(points, point.DeepCopy())
 
 		// in the default case this is always true
 		if currGroupID == dgc.InterleavedGroupID {
@@ -122,7 +121,6 @@ func (g *DataGenerator) runSimulator(sim common.Simulator, serializer serialize.
 				return nil, fmt.Errorf("can not serialize point: %s", err)
 			}
 		}
-		point.Reset()
 
 		currGroupID = (currGroupID + 1) % dgc.InterleavedNumGroups
 	}
@@ -141,7 +139,7 @@ func (g *DataGenerator) getSerializer(sim common.Simulator, target targets.Imple
 	return target.Serializer(), nil
 }
 
-//TODO should be implemented in targets package
+// TODO should be implemented in targets package
 func (g *DataGenerator) writeHeader(headers *common.GeneratedDataHeaders) {
 	g.bufOut.WriteString("tags")
 

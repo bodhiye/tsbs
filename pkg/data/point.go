@@ -3,6 +3,8 @@ package data
 // Point wraps a single data point. It stores database-agnostic data
 import (
 	"bytes"
+	"fmt"
+	"strconv"
 	"time"
 )
 
@@ -171,4 +173,103 @@ type LoadedPoint struct {
 // NewPoint creates a Point with the provided data as the internal representation
 func NewLoadedPoint(data interface{}) LoadedPoint {
 	return LoadedPoint{Data: data}
+}
+
+func (p *Point) DeepCopy() *Point {
+	var newPoint = &Point{}
+	newPoint.Copy(p)
+	return newPoint
+}
+
+func (p *Point) String() string {
+	buf := make([]byte, 0, 1024)
+	buf = append(buf, p.MeasurementName()...)
+
+	fakeTags := make([]int, 0)
+	tagKeys := p.TagKeys()
+	tagValues := p.TagValues()
+	for i := 0; i < len(tagKeys); i++ {
+		if tagValues[i] == nil {
+			continue
+		}
+		switch v := tagValues[i].(type) {
+		case string:
+			buf = append(buf, ',')
+			buf = append(buf, tagKeys[i]...)
+			buf = append(buf, '=')
+			buf = append(buf, []byte(v)...)
+		default:
+			fakeTags = append(fakeTags, i)
+		}
+	}
+	fieldKeys := p.FieldKeys()
+	if len(fakeTags) > 0 || len(fieldKeys) > 0 {
+		buf = append(buf, ' ')
+	}
+	firstFieldFormatted := false
+	for i := 0; i < len(fakeTags); i++ {
+		tagIndex := fakeTags[i]
+		if firstFieldFormatted {
+			buf = append(buf, ',')
+		}
+		firstFieldFormatted = true
+		buf = appendField(buf, tagKeys[tagIndex], tagValues[tagIndex])
+	}
+
+	fieldValues := p.FieldValues()
+	for i := 0; i < len(fieldKeys); i++ {
+		value := fieldValues[i]
+		if value == nil {
+			continue
+		}
+		if firstFieldFormatted {
+			buf = append(buf, ',')
+		}
+		firstFieldFormatted = true
+		buf = appendField(buf, fieldKeys[i], value)
+	}
+
+	if !firstFieldFormatted {
+		return ""
+	}
+	buf = append(buf, ' ')
+	buf = fastFormatAppend(p.Timestamp().UTC().UnixNano(), buf)
+	buf = append(buf, '\n')
+	return string(buf)
+}
+
+func appendField(buf, key []byte, v interface{}) []byte {
+	buf = append(buf, key...)
+	buf = append(buf, '=')
+	buf = fastFormatAppend(v, buf)
+	switch v.(type) {
+	case int, int64:
+		buf = append(buf, 'i')
+	}
+	return buf
+}
+
+func fastFormatAppend(v interface{}, buf []byte) []byte {
+	switch v.(type) {
+	case int:
+		return strconv.AppendInt(buf, int64(v.(int)), 10)
+	case int64:
+		return strconv.AppendInt(buf, v.(int64), 10)
+	case float64:
+		return strconv.AppendFloat(buf, v.(float64), 'f', -1, 64)
+	case float32:
+		return strconv.AppendFloat(buf, float64(v.(float32)), 'f', -1, 32)
+	case bool:
+		return strconv.AppendBool(buf, v.(bool))
+	case []byte:
+		buf = append(buf, v.([]byte)...)
+		return buf
+	case string:
+		buf = append(buf, v.(string)...)
+		return buf
+	case nil:
+		return buf
+	default:
+		panic(fmt.Sprintf("unknown field type for %#v", v))
+	}
 }
