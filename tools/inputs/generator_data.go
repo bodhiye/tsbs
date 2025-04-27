@@ -107,13 +107,15 @@ func (g *DataGenerator) runSimulator(sim common.Simulator, serializer serialize.
 	currGroupID := uint(0)
 	point := data.NewPoint()
 	var points = make([]data.Point, 0)
+	var _point data.Point
 	for !sim.Finished() {
 		write := sim.Next(point)
 		if !write {
 			point.Reset()
 			continue
 		}
-		points = append(points, *point)
+		_point.Copy(point)
+		points = append(points, _point)
 
 		// in the default case this is always true
 		if currGroupID == dgc.InterleavedGroupID {
