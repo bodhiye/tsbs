@@ -9,8 +9,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/spf13/viper"
-	"github.com/spf13/pflag"
 	"github.com/bodhiye/tsbs/pkg/data"
 	"github.com/bodhiye/tsbs/pkg/data/serialize"
 	"github.com/bodhiye/tsbs/pkg/data/source"
@@ -18,6 +16,8 @@ import (
 	"github.com/bodhiye/tsbs/pkg/data/usecases/common"
 	"github.com/bodhiye/tsbs/pkg/targets"
 	"github.com/bodhiye/tsbs/pkg/targets/constants"
+	"github.com/spf13/pflag"
+	"github.com/spf13/viper"
 )
 
 const (
@@ -87,7 +87,7 @@ func TestDataGeneratorGenerate(t *testing.T) {
 	}
 	// Test that an invalid config fails
 	c := &common.DataGeneratorConfig{}
-	err := dg.Generate(c, mockTarget)
+	_, err := dg.Generate(c, mockTarget)
 	if err == nil {
 		t.Errorf("unexpected lack of error with empty DataGeneratorConfig")
 	}
@@ -110,7 +110,7 @@ func TestDataGeneratorGenerate(t *testing.T) {
 	dg.Out = &buf
 	mockSerializer := &mockSerializer{}
 	mockTarget.serializer = mockSerializer
-	err = dg.Generate(c, mockTarget)
+	_, err = dg.Generate(c, mockTarget)
 	if err != nil {
 		t.Errorf("unexpected error when generating: got %v", err)
 	} else if len(mockSerializer.sentPoints) != int(c.Limit) {
@@ -257,7 +257,7 @@ func TestRunSimulator(t *testing.T) {
 		}
 		serializer := &testSerializer{shouldError: c.shouldError}
 
-		err := g.runSimulator(sim, serializer, dgc)
+		_, err := g.runSimulator(sim, serializer, dgc)
 		if c.shouldError && err == nil {
 			t.Errorf("%s: unexpected lack of error", c.desc)
 		} else if !c.shouldError && err != nil {

@@ -23,12 +23,12 @@ import (
 	"os/signal"
 	"runtime/pprof"
 
-	"github.com/spf13/viper"
-	"github.com/spf13/pflag"
 	"github.com/bodhiye/tsbs/pkg/data/usecases/common"
 	"github.com/bodhiye/tsbs/pkg/targets/initializers"
 	"github.com/bodhiye/tsbs/tools/inputs"
 	"github.com/bodhiye/tsbs/tools/utils"
+	"github.com/spf13/pflag"
+	"github.com/spf13/viper"
 )
 
 var (
@@ -67,10 +67,11 @@ func main() {
 		defer startMemoryProfile(profileFile)()
 	}
 	target := initializers.GetTarget(config.Format)
-	err := dg.Generate(config, target)
+	points, err := dg.Generate(config, target)
 	if err != nil {
 		fmt.Printf("error: %v\n", err)
 	}
+	log.Printf("Data-Generator generated %d points\n", len(points))
 }
 
 // startMemoryProfile sets up memory profiling to be written to profileFile. It

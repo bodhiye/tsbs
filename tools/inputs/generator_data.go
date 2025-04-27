@@ -65,23 +65,23 @@ func (g *DataGenerator) init(config common.GeneratorConfig) error {
 	return nil
 }
 
-func (g *DataGenerator) Generate(config common.GeneratorConfig, target targets.ImplementedTarget) error {
+func (g *DataGenerator) Generate(config common.GeneratorConfig, target targets.ImplementedTarget) ([]data.Point, error) {
 	err := g.init(config)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	rand.Seed(g.config.Seed)
 
 	scfg, err := usecases.GetSimulatorConfig(g.config)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	sim := scfg.NewSimulator(g.config.LogInterval, g.config.Limit)
 	serializer, err := g.getSerializer(sim, target)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	return g.runSimulator(sim, serializer, g.config)
@@ -101,30 +101,32 @@ func (g *DataGenerator) CreateSimulator(config *common.DataGeneratorConfig) (com
 	return scfg.NewSimulator(g.config.LogInterval, g.config.Limit), nil
 }
 
-func (g *DataGenerator) runSimulator(sim common.Simulator, serializer serialize.PointSerializer, dgc *common.DataGeneratorConfig) error {
+func (g *DataGenerator) runSimulator(sim common.Simulator, serializer serialize.PointSerializer, dgc *common.DataGeneratorConfig) ([]data.Point, error) {
 	defer g.bufOut.Flush()
 
 	currGroupID := uint(0)
 	point := data.NewPoint()
+	var points = make([]data.Point, 0)
 	for !sim.Finished() {
 		write := sim.Next(point)
 		if !write {
 			point.Reset()
 			continue
 		}
+		points = append(points, *point)
 
 		// in the default case this is always true
 		if currGroupID == dgc.InterleavedGroupID {
 			err := serializer.Serialize(point, g.bufOut)
 			if err != nil {
-				return fmt.Errorf("can not serialize point: %s", err)
+				return nil, fmt.Errorf("can not serialize point: %s", err)
 			}
 		}
 		point.Reset()
 
 		currGroupID = (currGroupID + 1) % dgc.InterleavedNumGroups
 	}
-	return nil
+	return points, nil
 }
 
 func (g *DataGenerator) getSerializer(sim common.Simulator, target targets.ImplementedTarget) (serialize.PointSerializer, error) {
