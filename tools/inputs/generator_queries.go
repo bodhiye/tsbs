@@ -6,12 +6,18 @@ import (
 	"fmt"
 	"io"
 	"math/rand"
+	"net/url"
 	"os"
 	"sort"
+	"strings"
 	"time"
 
 	queryUtils "github.com/bodhiye/tsbs/cmd/tsbs_generate_queries/utils"
 	"github.com/bodhiye/tsbs/pkg/data/usecases/common"
+	"github.com/bodhiye/tsbs/cmd/tsbs_generate_queries/uses/devops"
+	"github.com/bodhiye/tsbs/cmd/tsbs_generate_queries/uses/iot"
+
+	"github.com/bodhiye/tsbs/pkg/query"
 	"github.com/bodhiye/tsbs/pkg/query/config"
 	"github.com/bodhiye/tsbs/pkg/query/factories"
 	internalUtils "github.com/bodhiye/tsbs/tools/utils"
@@ -29,6 +35,42 @@ const (
 	errCannotParseTimeFmt       = "cannot parse time from string '%s': %v"
 	errBadUseFmt                = "invalid use case specified: '%v'"
 )
+
+var UseCaseMatrix = map[string]map[string]queryUtils.QueryFillerMaker{
+	"devops": {
+		devops.LabelSingleGroupby + "-1-1-1":  devops.NewSingleGroupby(1, 1, 1),
+		devops.LabelSingleGroupby + "-1-1-12": devops.NewSingleGroupby(1, 1, 12),
+		devops.LabelSingleGroupby + "-1-8-1":  devops.NewSingleGroupby(1, 8, 1),
+		devops.LabelSingleGroupby + "-5-1-1":  devops.NewSingleGroupby(5, 1, 1),
+		devops.LabelSingleGroupby + "-5-1-12": devops.NewSingleGroupby(5, 1, 12),
+		devops.LabelSingleGroupby + "-5-8-1":  devops.NewSingleGroupby(5, 8, 1),
+		devops.LabelMaxAll + "-1":             devops.NewMaxAllCPU(1, devops.MaxAllDuration),
+		devops.LabelMaxAll + "-8":             devops.NewMaxAllCPU(8, devops.MaxAllDuration),
+		devops.LabelMaxAll + "-32-24":         devops.NewMaxAllCPU(32, 24*time.Hour),
+		devops.LabelDoubleGroupby + "-1":      devops.NewGroupBy(1),
+		devops.LabelDoubleGroupby + "-5":      devops.NewGroupBy(5),
+		devops.LabelDoubleGroupby + "-all":    devops.NewGroupBy(devops.GetCPUMetricsLen()),
+		devops.LabelGroupbyOrderbyLimit:       devops.NewGroupByOrderByLimit,
+		devops.LabelHighCPU + "-all":          devops.NewHighCPU(0),
+		devops.LabelHighCPU + "-1":            devops.NewHighCPU(1),
+		devops.LabelLastpoint:                 devops.NewLastPointPerHost,
+	},
+	"iot": {
+		iot.LabelLastLoc:                       iot.NewLastLocPerTruck,
+		iot.LabelLastLocSingleTruck:            iot.NewLastLocSingleTruck,
+		iot.LabelLowFuel:                       iot.NewTruckWithLowFuel,
+		iot.LabelHighLoad:                      iot.NewTruckWithHighLoad,
+		iot.LabelStationaryTrucks:              iot.NewStationaryTrucks,
+		iot.LabelLongDrivingSessions:           iot.NewTrucksWithLongDrivingSession,
+		iot.LabelLongDailySessions:             iot.NewTruckWithLongDailySession,
+		iot.LabelAvgVsProjectedFuelConsumption: iot.NewAvgVsProjectedFuelConsumption,
+		iot.LabelAvgDailyDrivingDuration:       iot.NewAvgDailyDrivingDuration,
+		iot.LabelAvgDailyDrivingSession:        iot.NewAvgDailyDrivingSession,
+		iot.LabelAvgLoad:                       iot.NewAvgLoad,
+		iot.LabelDailyActivity:                 iot.NewDailyTruckActivity,
+		iot.LabelBreakdownFrequency:            iot.NewTruckBreakdownFrequency,
+	},
+}
 
 // DevopsGeneratorMaker creates a query generator for devops use case
 type DevopsGeneratorMaker interface {
@@ -76,15 +118,15 @@ func NewQueryGenerator(useCaseMatrix map[string]map[string]queryUtils.QueryFille
 	}
 }
 
-func (g *QueryGenerator) Generate(config common.GeneratorConfig) error {
+func (g *QueryGenerator) Generate(config common.GeneratorConfig) ([]string, error) {
 	err := g.init(config)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	useGen, err := g.getUseCaseGenerator(g.conf)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	filler := g.useCaseMatrix[g.conf.Use][g.conf.QueryType](useGen)
@@ -201,7 +243,7 @@ func (g *QueryGenerator) getUseCaseGenerator(c *config.QueryGeneratorConfig) (qu
 	}
 }
 
-func (g *QueryGenerator) runQueryGeneration(useGen queryUtils.QueryGenerator, filler queryUtils.QueryFiller, c *config.QueryGeneratorConfig) error {
+func (g *QueryGenerator) runQueryGeneration(useGen queryUtils.QueryGenerator, filler queryUtils.QueryFiller, c *config.QueryGeneratorConfig) ([]string, error) {
 	stats := make(map[string]int64)
 	currentGroup := uint(0)
 	enc := gob.NewEncoder(g.bufOut)
@@ -212,10 +254,11 @@ func (g *QueryGenerator) runQueryGeneration(useGen queryUtils.QueryGenerator, fi
 	if g.conf.Debug > 0 {
 		_, err := fmt.Fprintf(g.DebugOut, "using random seed %d\n", g.conf.Seed)
 		if err != nil {
-			return fmt.Errorf(errCouldNotDebugFmt, err)
+			return nil, fmt.Errorf(errCouldNotDebugFmt, err)
 		}
 	}
 
+	var queries = make([]string, 0)
 	for i := 0; i < int(c.Limit); i++ {
 		q := useGen.GenerateEmptyQuery()
 		q = filler.Fill(q)
@@ -223,7 +266,7 @@ func (g *QueryGenerator) runQueryGeneration(useGen queryUtils.QueryGenerator, fi
 		if currentGroup == c.InterleavedGroupID {
 			err := enc.Encode(q)
 			if err != nil {
-				return fmt.Errorf(errCouldNotEncodeQueryFmt, err)
+				return nil, fmt.Errorf(errCouldNotEncodeQueryFmt, err)
 			}
 			stats[string(q.HumanLabelName())]++
 
@@ -239,10 +282,16 @@ func (g *QueryGenerator) runQueryGeneration(useGen queryUtils.QueryGenerator, fi
 
 				_, err = fmt.Fprintf(g.DebugOut, debugMsg+"\n")
 				if err != nil {
-					return fmt.Errorf(errCouldNotDebugFmt, err)
+					return nil, fmt.Errorf(errCouldNotDebugFmt, err)
 				}
 			}
 		}
+		hq := q.(*query.HTTP)
+		decodedPath, err := url.QueryUnescape(string(hq.Path))
+		if err != nil {
+			return nil, err
+		}
+		queries = append(queries, strings.TrimPrefix(decodedPath, "/query?q="))
 		q.Release()
 
 		currentGroup++
@@ -260,8 +309,8 @@ func (g *QueryGenerator) runQueryGeneration(useGen queryUtils.QueryGenerator, fi
 	for _, k := range keys {
 		_, err := fmt.Fprintf(g.DebugOut, "%s: %d points\n", k, stats[k])
 		if err != nil {
-			return fmt.Errorf(errCouldNotQueryStatsFmt, err)
+			return nil, fmt.Errorf(errCouldNotQueryStatsFmt, err)
 		}
 	}
-	return nil
+	return queries, nil
 }

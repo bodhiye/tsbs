@@ -528,7 +528,7 @@ func TestQueryGeneratorRunQueryGeneration(t *testing.T) {
 		}
 		filler := g.useCaseMatrix[config.Use][config.QueryType](useGen)
 
-		err = g.runQueryGeneration(useGen, filler, config)
+		_, err = g.runQueryGeneration(useGen, filler, config)
 		if err != nil {
 			t.Errorf("unexpected error: got %v", err)
 		}
@@ -569,7 +569,7 @@ func TestQueryGeneratorRunQueryGenerationErrors(t *testing.T) {
 	filler := g.useCaseMatrix[c.Use][c.QueryType](useGen)
 
 	checkErr := func(want string) {
-		err = g.runQueryGeneration(useGen, filler, c)
+		_, err = g.runQueryGeneration(useGen, filler, c)
 		if err == nil {
 			t.Errorf("unexpected lack of error")
 		} else if got := err.Error(); !strings.HasPrefix(got, want) {
@@ -608,7 +608,7 @@ func TestQueryGeneratorGenerate(t *testing.T) {
 
 	// Test that an invalid config fails
 	c := &config.QueryGeneratorConfig{}
-	err := g.Generate(c)
+	_, err := g.Generate(c)
 	if err == nil {
 		t.Errorf("unexpected lack of error with empty QueryGeneratorConfig")
 	}
@@ -617,7 +617,7 @@ func TestQueryGeneratorGenerate(t *testing.T) {
 	var buf bytes.Buffer
 	g.Out = &buf
 	g.DebugOut = ioutil.Discard
-	err = g.Generate(c)
+	_, err = g.Generate(c)
 	if err != nil {
 		t.Errorf("unexpected error when generating: got %v", err)
 	}
